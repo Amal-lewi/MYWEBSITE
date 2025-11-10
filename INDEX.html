@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ping Pong Game</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    canvas {
+      background: #111;
+      border: 2px solid white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const paddleWidth = 10, paddleHeight = 100;
+    let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
+    let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
+    const paddleSpeed = 6;
+
+    const ballSize = 10;
+    let ballX = canvas.width / 2, ballY = canvas.height / 2;
+    let ballSpeedX = 5, ballSpeedY = 3;
+
+    let leftUp = false, leftDown = false, rightUp = false, rightDown = false;
+
+    // Controls
+    document.addEventListener("keydown", e => {
+      if (e.key === "w") leftUp = true;
+      if (e.key === "s") leftDown = true;
+      if (e.key === "ArrowUp") rightUp = true;
+      if (e.key === "ArrowDown") rightDown = true;
+    });
+    document.addEventListener("keyup", e => {
+      if (e.key === "w") leftUp = false;
+      if (e.key === "s") leftDown = false;
+      if (e.key === "ArrowUp") rightUp = false;
+      if (e.key === "ArrowDown") rightDown = false;
+    });
+
+    function move() {
+      if (leftUp && leftPaddleY > 0) leftPaddleY -= paddleSpeed;
+      if (leftDown && leftPaddleY < canvas.height - paddleHeight) leftPaddleY += paddleSpeed;
+      if (rightUp && rightPaddleY > 0) rightPaddleY -= paddleSpeed;
+      if (rightDown && rightPaddleY < canvas.height - paddleHeight) rightPaddleY += paddleSpeed;
+
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // Ball collision top/bottom
+      if (ballY <= 0 || ballY + ballSize >= canvas.height) {
+        ballSpeedY = -ballSpeedY;
+      }
+
+      // Ball collision paddles
+      if (
+        ballX <= 20 &&
+        ballY + ballSize >= leftPaddleY &&
+        ballY <= leftPaddleY + paddleHeight
+      ) {
+        ballSpeedX = -ballSpeedX;
+      }
+
+      if (
+        ballX + ballSize >= canvas.width - 20 &&
+        ballY + ballSize >= rightPaddleY &&
+        ballY <= rightPaddleY + paddleHeight
+      ) {
+        ballSpeedX = -ballSpeedX;
+      }
+
+      // Reset if ball goes off screen
+      if (ballX < 0 || ballX > canvas.width) {
+        ballX = canvas.width / 2;
+        ballY = canvas.height / 2;
+        ballSpeedX = -ballSpeedX;
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw paddles
+      ctx.fillStyle = "white";
+      ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
+      ctx.fillRect(canvas.width - 20, rightPaddleY, paddleWidth, paddleHeight);
+
+      // Draw ball
+      ctx.fillRect(ballX, ballY, ballSize, ballSize);
+    }
+
+    function gameLoop() {
+      move();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
