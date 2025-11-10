@@ -3,113 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ping Pong Game</title>
+  <title>Appreciation for Mommy – Mrs. Altine</title>
   <style>
     body {
       margin: 0;
-      background: black;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #006400, #b30000);
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
     }
 
-    canvas {
-      background: #111;
-      border: 2px solid white;
+    header {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .photo {
+      margin: 30px auto;
+    }
+
+    .photo img {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      border: 5px solid white;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+      object-fit: cover;
+    }
+
+    .message {
+      max-width: 700px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      border-radius: 20px;
+      line-height: 1.6;
+      font-size: 1.2em;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.5);
+      font-size: 1em;
+      letter-spacing: 1px;
+    }
+
+    audio {
+      margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message, .photo, header {
+      animation: fadeIn 2s ease;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="800" height="500"></canvas>
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+  <header>
+    💚 A Special Tribute to My Mommy – Mrs. Altine ❤️
+  </header>
 
-    const paddleWidth = 10, paddleHeight = 100;
-    let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
-    let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
-    const paddleSpeed = 6;
+  <div class="photo">
+    <!-- Replace "mommy.jpg" with the name of her photo file -->
+    <img src="mommy.jpg" alt="Mrs. Altine">
+  </div>
 
-    const ballSize = 10;
-    let ballX = canvas.width / 2, ballY = canvas.height / 2;
-    let ballSpeedX = 5, ballSpeedY = 3;
+  <div class="message">
+    <h2>Thank You, Mommy 💐</h2>
+    <p>
+      Dear Mommy, Mrs. Altine — you are a shining light of love, strength, and faith.  
+      Your dedication, joy, and endless care have filled our hearts with warmth.  
+      You have shown us what true love and godly living mean every single day.  
+    </p>
+    <p>
+      May God continue to bless you with long life, happiness, and peace.  
+      We love you deeply — today and always. ❤️  
+    </p>
+    <p><strong>“Her children rise up and call her blessed.” – Proverbs 31:28</strong></p>
+  </div>
 
-    let leftUp = false, leftDown = false, rightUp = false, rightDown = false;
+  <audio controls autoplay loop>
+    <!-- Replace the src below with your Christian song file (e.g., "song.mp3") -->
+    <source src="christian-song.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
-    // Controls
-    document.addEventListener("keydown", e => {
-      if (e.key === "w") leftUp = true;
-      if (e.key === "s") leftDown = true;
-      if (e.key === "ArrowUp") rightUp = true;
-      if (e.key === "ArrowDown") rightDown = true;
-    });
-    document.addEventListener("keyup", e => {
-      if (e.key === "w") leftUp = false;
-      if (e.key === "s") leftDown = false;
-      if (e.key === "ArrowUp") rightUp = false;
-      if (e.key === "ArrowDown") rightDown = false;
-    });
-
-    function move() {
-      if (leftUp && leftPaddleY > 0) leftPaddleY -= paddleSpeed;
-      if (leftDown && leftPaddleY < canvas.height - paddleHeight) leftPaddleY += paddleSpeed;
-      if (rightUp && rightPaddleY > 0) rightPaddleY -= paddleSpeed;
-      if (rightDown && rightPaddleY < canvas.height - paddleHeight) rightPaddleY += paddleSpeed;
-
-      ballX += ballSpeedX;
-      ballY += ballSpeedY;
-
-      // Ball collision top/bottom
-      if (ballY <= 0 || ballY + ballSize >= canvas.height) {
-        ballSpeedY = -ballSpeedY;
-      }
-
-      // Ball collision paddles
-      if (
-        ballX <= 20 &&
-        ballY + ballSize >= leftPaddleY &&
-        ballY <= leftPaddleY + paddleHeight
-      ) {
-        ballSpeedX = -ballSpeedX;
-      }
-
-      if (
-        ballX + ballSize >= canvas.width - 20 &&
-        ballY + ballSize >= rightPaddleY &&
-        ballY <= rightPaddleY + paddleHeight
-      ) {
-        ballSpeedX = -ballSpeedX;
-      }
-
-      // Reset if ball goes off screen
-      if (ballX < 0 || ballX > canvas.width) {
-        ballX = canvas.width / 2;
-        ballY = canvas.height / 2;
-        ballSpeedX = -ballSpeedX;
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw paddles
-      ctx.fillStyle = "white";
-      ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
-      ctx.fillRect(canvas.width - 20, rightPaddleY, paddleWidth, paddleHeight);
-
-      // Draw ball
-      ctx.fillRect(ballX, ballY, ballSize, ballSize);
-    }
-
-    function gameLoop() {
-      move();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    gameLoop();
-  </script>
+  <footer>
+    Made with 💚 and ❤️ for the best Mommy ever — Mrs. Altine
+  </footer>
 </body>
 </html>
